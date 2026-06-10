@@ -38,15 +38,14 @@ pub fn build(b: *std.Build) !void {
     //const o = Options.getOptions(b);
     //const options = o[0];
 
-    const rgfw_dependency = b.dependency("RGFW", .{
-        .target = target,
-        .optimize = optimize,
-    });
-
     const rgfw_module = b.addModule("RGFW", .{
         .root_source_file = b.path("src/rgfw.zig"),
         .target = target,
         .optimize = optimize,
+    });
+
+    rgfw_module.addCSourceFile(.{
+        .file = b.path("RGFW.h"),
     });
 
     const rgfw_lib = b.addLibrary(.{
@@ -83,7 +82,6 @@ pub fn build(b: *std.Build) !void {
         },
         else => {},
     }
-    rgfw_module.addIncludePath(rgfw_dependency.path(""));
 
     rgfw_lib.root_module.addCMacro("RGFW_bool", "u8");
     //if (options.buffer) {
